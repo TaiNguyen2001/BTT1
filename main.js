@@ -1,31 +1,33 @@
-let tasks = []
+let tasks = 0
 
-let taskInputField = document.querySelector(".add-task-input")
-let main = document.querySelector(".main-section")
-let controlSection = document.querySelector(".todo-list-control")
-let checkBtn = document.querySelector(".check-all-btn")
+const taskInputFieldSelector = document.querySelector(".add-task-input")
+const todoListSelector = document.querySelector(".todo-list")
+const controlSectionSelector = document.querySelector(".todo-list-control")
+const checkBtnSelector = document.querySelector(".check-all-btn")
+const taskQuantitySelector = document.querySelector(".task-quantity")
 
-taskInputField.addEventListener('keypress', function (e) {
+taskInputFieldSelector.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-      let taskContent = taskInputField.value;
+      const taskContent = taskInputFieldSelector.value;
       //Check xem user đã điền vào text field chưa
       if(taskContent == '') {
           alert("Please enter the field")
           return
       }
     //Add content của task vào array phục vụ cho việc xóa về sau
-    tasks.unshift(taskContent)
+    tasks += 1
     renderTask(taskContent)
     //Visible tab control phía dưới cùng giao diện
-    controlSection.style.visibility = "visible";
+    controlSectionSelector.style.visibility = "visible";
+    
+    deleteTask()
     
     }
 })
 
 function renderTask(task) { 
     //Render task mới khi user nhập thêm
-    main.innerHTML += `
-    <ul class="todo-list">
+    todoListSelector.innerHTML += `
         <li class="todo-content">
             <input type="checkbox" class="check-task">
             <input type="text" value="${task}" readonly>
@@ -33,10 +35,35 @@ function renderTask(task) {
                 <i class="fa-solid fa-xmark"></i>
             </div>
         </li>
-    </ul>
     `
     //Reset text field
-    taskInputField.value = ''
+    taskInputFieldSelector.value = ''
+
     //Visible button check all
-    checkBtn.style.visibility = "visible"
+    checkBtnSelector.style.visibility = "visible"
+
+    //Display the number of tasks
+    taskQuantitySelector.innerText = `${tasks} tasks left`
+
+    
 }
+
+//Remove task
+
+function deleteTask() {
+    const deleteBtnsSelector = document.querySelectorAll('.delete-task-btn')
+    deleteBtnsSelector.forEach(deleteBtn => {
+        deleteBtn.addEventListener('click', function (){
+            deleteBtn.parentElement.outerHTML = ""    
+            tasks -= 1 
+            if(tasks === 0){
+                controlSectionSelector.style.visibility = "hidden";
+                checkBtnSelector.style.visibility = "hidden"
+            }
+            //Display the number of tasks
+            taskQuantitySelector.innerText = `${tasks} tasks left`
+            
+        })
+    })
+}
+
