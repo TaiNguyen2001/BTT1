@@ -55,6 +55,8 @@ body {
     outline: none;
 }
 
+.done-content,
+.active-content,
 .todo-content {
     display: flex;
 }
@@ -137,4 +139,8 @@ input[type = 'text'] {
 
 .active{
     border: 1px solid pink;
+}
+
+.btn-delete-all{
+    visibility: hidden;
 }
