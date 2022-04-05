@@ -10,17 +10,15 @@ const activeListSelector = document.querySelector(".active-list")
 const doneBtnSelector = document.querySelector(".btn-complete")
 const activeBtnSelector = document.querySelector(".btn-active")
 const allBtnSelector = document.querySelector(".btn-all")
-window.addEventListener('load', () => {
-  tasks = JSON.parse(localStorage.getItem("tasks"))
-  if(tasks.length > 0 ){
-    tasks.forEach(task => {
-      render(tasks,task)
-    })
+window.addEventListener('load', function(){
+  try{
+    loadPage()
+  } catch {
+    alert("Error while loading")
   }
 
   taskInputFieldSelector.addEventListener('keypress', function (e) {
       let taskContent
-      // tasks = JSON.parse(localStorage.getItem("tasks"))
       if (e.key === 'Enter') {
           taskContent = taskInputFieldSelector.value;
           //Check xem user đã điền vào text field chưa
@@ -198,4 +196,14 @@ Array.prototype.remove = function() {
       }
   }
   return this;
+
 };
+
+function loadPage() {
+  tasks = JSON.parse(localStorage.getItem("tasks"))
+    if(tasks.length > 0 ){
+      tasks.forEach(task => {
+        render(tasks,task)
+      })
+    }
+}
