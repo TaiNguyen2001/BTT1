@@ -10,18 +10,23 @@ const activeListSelector = document.querySelector(".active-list")
 const doneBtnSelector = document.querySelector(".btn-complete")
 const activeBtnSelector = document.querySelector(".btn-active")
 const allBtnSelector = document.querySelector(".btn-all")
-window.addEventListener('load', function(){
-  try{
-    loadPage()
-  } catch {
-    alert("Error while loading")
+window.addEventListener('load', () => {
+  try {
+    tasks = JSON.parse(localStorage.getItem("tasks"))
+  } catch{
+    tasks = []
+  }
+
+  if(tasks.length > 0 ){
+    tasks.forEach(task => {
+      render(tasks,task)
+    })
   }
 
   taskInputFieldSelector.addEventListener('keypress', function (e) {
       let taskContent
       if (e.key === 'Enter') {
           taskContent = taskInputFieldSelector.value;
-          //Check xem user đã điền vào text field chưa
           if(taskContent == '') {
               alert("Please enter the field")
               return
@@ -37,7 +42,7 @@ window.addEventListener('load', function(){
           render(tasks,taskContent)
       }   
   })
-  //Click to show active task
+
   activeBtnSelector.addEventListener('click', function(){
       activeListSelector.innerHTML = ''
       checkBtnSelector.style.visibility = "hidden"
@@ -49,7 +54,7 @@ window.addEventListener('load', function(){
           displayActiveTasks()
       }
   })
-  //Click to show done tasks
+
   doneBtnSelector.addEventListener('click', function(){
       doneListSelector.innerHTML = ''
       checkBtnSelector.style.visibility = "hidden"
@@ -61,7 +66,7 @@ window.addEventListener('load', function(){
           displayDoneTasks()
       }
   })
-  //Click to show all tasks
+
   allBtnSelector.addEventListener("click", function (){
       if(!allBtnSelector.classList.contains("active")){
           allBtnSelector.classList.add("active")
@@ -149,7 +154,7 @@ function render(tasks,taskContent){
 
   taskInputFieldSelector.value = ''
 
-  //Remove element
+
   task_btn.addEventListener('click', function(){
       taskListSelector.removeChild(task_el);
       tasks.remove(task_el.children[1].value)
@@ -161,12 +166,12 @@ function render(tasks,taskContent){
         return
       }
   })
-  //Visible button check all
+
   checkBtnSelector.style.visibility = "visible"
   controlSectionSelector.style.visibility = 'visible'
-  //Display the number of tasks
+
   taskQuantitySelector.innerText = `${tasks.length} tasks left`
-  //Click button to select all the items
+
   checkBtnSelector.addEventListener('click', function(){
       if(task_checkbox.checked){
           task_checkbox.checked = false
@@ -196,14 +201,4 @@ Array.prototype.remove = function() {
       }
   }
   return this;
-
 };
-
-function loadPage() {
-  tasks = JSON.parse(localStorage.getItem("tasks"))
-    if(tasks.length > 0 ){
-      tasks.forEach(task => {
-        render(tasks,task)
-      })
-    }
-}
