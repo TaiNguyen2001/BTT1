@@ -13,7 +13,7 @@ const allBtnSelector = document.querySelector(".btn-all")
 window.addEventListener('load', () => {
   try {
     tasks = JSON.parse(localStorage.getItem("tasks"))
-  } catch{
+  } catch {
     tasks = []
   }
 
@@ -51,8 +51,8 @@ window.addEventListener('load', () => {
           activeBtnSelector.classList.add("active")
           doneBtnSelector.classList.remove("active")
           allBtnSelector.classList.remove("active")
-          displayActiveTasks()
-      }
+        }
+      displayActiveTasks()
   })
 
   doneBtnSelector.addEventListener('click', function(){
@@ -63,8 +63,8 @@ window.addEventListener('load', () => {
           doneBtnSelector.classList.add("active")
           activeBtnSelector.classList.remove("active")
           allBtnSelector.classList.remove("active")
-          displayDoneTasks()
-      }
+        }
+      displayDoneTasks()
   })
 
   allBtnSelector.addEventListener("click", function (){
@@ -72,14 +72,15 @@ window.addEventListener('load', () => {
           allBtnSelector.classList.add("active")
           doneBtnSelector.classList.remove("active")
           activeBtnSelector.classList.remove("active")
-          displayAllTasks()
-      }
+        }
+      displayAllTasks()
   })
 })
 
 function displayDoneTasks(){
   const allTasksSelector = document.querySelectorAll(".todo-content")
-  
+  const allActiveTasksSelector = document.querySelectorAll(".active-content")
+
   doneListSelector.style.display = 'block'
   activeListSelector.style.display = 'none'
   taskListSelector.style.display = 'none'
@@ -96,10 +97,25 @@ function displayDoneTasks(){
 
       }
   })
+
+  allActiveTasksSelector.forEach((task, index) => {
+    if(task.children[0].checked){
+        doneListSelector.innerHTML += `
+        <li class="done-content">
+            <input type="checkbox" class="check-task" checked>
+            <input type="text" value="${task.children[1].value}" readonly>
+            <div class="delete-task-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </li>`
+
+    }
+})
 }
 
 function displayActiveTasks(){
   const allTasksSelector = document.querySelectorAll(".todo-content")
+  const allDoneTasksSelector = document.querySelectorAll(".done-content")
 
   doneListSelector.style.display = 'none'
   activeListSelector.style.display = 'block'
@@ -117,6 +133,20 @@ function displayActiveTasks(){
 
       }
   })
+
+  allDoneTasksSelector.forEach((task,index) => {
+    if(!task.children[0].checked){
+        activeListSelector.innerHTML += `
+        <li class="active-content ">
+            <input type="checkbox" class="check-task">
+            <input type="text" value="${task.children[1].value}" readonly>
+            <div class="delete-task-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </li>`
+
+    }
+})
 }
 
 function displayAllTasks(){
@@ -154,6 +184,18 @@ function render(tasks,taskContent){
 
   taskInputFieldSelector.value = ''
 
+  task_text.ondblclick = function() {
+    this.readOnly = false;
+    const index = tasks.indexOf(this.value)
+    this.addEventListener('keypress',function(e){
+      if (e.key === 'Enter'){
+        const newText = this.value;
+        tasks[index] = newText
+        localStorage.setItem("tasks", JSON.stringify(tasks))   
+        task_text.readOnly = true
+      }
+    })
+  }
 
   task_btn.addEventListener('click', function(){
       taskListSelector.removeChild(task_el);
@@ -172,23 +214,26 @@ function render(tasks,taskContent){
 
   taskQuantitySelector.innerText = `${tasks.length} tasks left`
 
+  let task_checked = document.querySelectorAll("input[checkbox]:checked").length
   checkBtnSelector.addEventListener('click', function(){
-      if(task_checkbox.checked){
-          task_checkbox.checked = false
-          document.querySelector(".btn-delete-all").style.visibility = "hidden"
-          return
-      }
-      task_checkbox.checked = true
-      document.querySelector(".btn-delete-all").style.visibility = "visible"
-      document.querySelector(".btn-delete-all").addEventListener('click', function(){
-        tasks = []
-        localStorage.setItem("tasks", JSON.stringify(tasks))
-        taskListSelector.innerHTML = ''
-        checkBtnSelector.style.visibility = "hidden"
-        controlSectionSelector.style.visibility = 'hidden'
-        document.querySelector(".btn-delete-all").style.visibility = "hidden"
-        location.reload()
-      })
+    if(task_checked == tasks.length){
+      task_checkbox.checked = false
+      task_checked = 0
+      document.querySelector(".btn-delete-all").style.visibility = "hidden"
+      return
+    }
+    task_checkbox.checked = true
+    task_checked=tasks.length
+    document.querySelector(".btn-delete-all").style.visibility = "visible"
+    document.querySelector(".btn-delete-all").addEventListener('click', function(){
+      tasks = []
+      localStorage.setItem("tasks", JSON.stringify(tasks))
+      taskListSelector.innerHTML = ''
+      checkBtnSelector.style.visibility = "hidden"
+      controlSectionSelector.style.visibility = 'hidden'
+      document.querySelector(".btn-delete-all").style.visibility = "hidden"
+      location.reload()
+    })
   })
 }
 
