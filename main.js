@@ -83,9 +83,9 @@ window.addEventListener('load', () => {
     displayAll()
   })
 
-  document.querySelector('.btn-delete-all').addEventListener('click',function () {
-    deleteDone
-  })
+  // document.querySelector('.btn-delete-all').addEventListener('click',function () {
+  //   deleteDone
+  // })
 
   checkBtnSelector.addEventListener('click', function () {
     let num = 0

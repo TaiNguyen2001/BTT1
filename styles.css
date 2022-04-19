@@ -93,7 +93,7 @@ input[type = 'text'] {
     visibility: hidden;
 }
 
-.todo-list:hover .delete-task-btn {
+.todo-content:hover .delete-task-btn {
     visibility: visible;
 }
 
@@ -133,6 +133,10 @@ input[type = 'text'] {
 .btn-complete{
     padding: 5px 10px;
     border-radius: 4px;
+}
+
+.btn-delete-all {
+    visibility: hidden;
 }
 
 .active{
